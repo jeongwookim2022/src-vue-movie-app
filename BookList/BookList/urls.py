@@ -19,5 +19,7 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("BookListAPI.urls")),
-    
+    # 3 Debug toolbar
+    path('__debug__/', include('debug_toolbar.urls')),
+
 ]

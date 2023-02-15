@@ -6,5 +6,4 @@ urlpatterns = [
     # 2
     path('books/', views.BookList.as_view()),
     path('books/<int:pk>', views.Book.as_view()),
-
 ]
