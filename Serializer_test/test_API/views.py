@@ -8,9 +8,14 @@ from .serializers import MenuItemSerializer
 
 @api_view()
 def menu_items(request):
-    items = MenuItem.objects.all()
-    serialized_item = MenuItemSerializer(items, many=True) # "many=Ture": essential when converting a list to JSON
+    # items = MenuItem.objects.all()
     
+    # when converting a model object to String
+    # you need to load the related Model with SQL code 
+    # - this is for the Foreign Key to store it in cache.
+    items = MenuItem.objects.select_related('category').all()
+    
+    serialized_item = MenuItemSerializer(items, many=True) # "many=Ture": essential when converting a list to JSON
     return Response(serialized_item.data)
 
 @api_view()
