@@ -19,12 +19,13 @@ class MenuItemSerializer(serializers.ModelSerializer):
     # creating a new field linked to an exisiting field
     stock = serializers.IntegerField(source='inventory')
     price_after_tax = serializers.SerializerMethodField(method_name='calculate_tax')
-    category = CategorySerializer()
-
+    category = CategorySerializer(read_only=True) # make it "READ_ONLY" cause it only needs to be display via GET_CALL.
+    category_id = serializers.IntegerField(write_only=True) # I want to save a MENU with a diff category_id
+                                                            # Don't want to show category_ID to GET_REQUEST.
     class Meta:
         model = MenuItem
         # fields = ['id', 'title', 'price', 'inventory']
-        fields = ['id', 'title', 'price', 'stock', 'price_after_tax', 'category']
+        fields = ['id', 'title', 'price', 'stock', 'price_after_tax', 'category', 'category_id']
         
     def calculate_tax(self, product:MenuItem):
         return product.price * Decimal(1.1)
