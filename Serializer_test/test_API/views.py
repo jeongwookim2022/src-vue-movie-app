@@ -16,7 +16,17 @@ def menu_items(request):
     # - this is for the Foreign Key to store it in cache.
     if request.method == "GET":
         items = MenuItem.objects.select_related('category').all()
-        
+        #### Filtering & Searching using the query params in GET METHOD
+        category_name = request.query_params.get('category')
+        to_price = request.query_params.get('to_price')
+        search = request.query_params.get('search')
+        if category_name:
+            items = items.filter(category__title=category_name)
+        if to_price:
+            items = items.filter(price__lte=to_price) # lte: conditional operator or fields lookup
+        if search:
+            items = items.filter(title__contains=search)
+        ####
         serialized_item = MenuItemSerializer(items, many=True) # "many=Ture": essential when converting a list to JSON
         return Response(serialized_item.data)
     elif request.method == "POST":
