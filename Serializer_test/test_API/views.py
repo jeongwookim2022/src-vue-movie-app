@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from .models import *
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from django.core.paginator import Paginator, EmptyPage
 
 # IMPORT your serializer FROM serializer.py
 from .serializers import MenuItemSerializer
@@ -32,6 +33,16 @@ def menu_items(request):
         if ordering:
             ordering_fields = ordering.split(",")
             items = items.order_by(*ordering_fields)
+        ####
+        #### Pagination(perpage & page)
+        perpage = request.query_params.get('perpage', default=2)
+        page = request.query_params.get('page', default=1)
+        
+        paginator = Paginator(items, per_page=perpage)
+        try:
+            items = paginator.page(number=page)
+        except EmptyPage: # when a client requests a not existing page
+            items = []    
         ####    
         serialized_item = MenuItemSerializer(items, many=True) # "many=Ture": essential when converting a list to JSON
         return Response(serialized_item.data)
