@@ -27,6 +27,12 @@ def menu_items(request):
         if search:
             items = items.filter(title__contains=search)
         ####
+        #### Ordering & Sorting
+        ordering = request.query_params.get('ordering')
+        if ordering:
+            ordering_fields = ordering.split(",")
+            items = items.order_by(*ordering_fields)
+        ####    
         serialized_item = MenuItemSerializer(items, many=True) # "many=Ture": essential when converting a list to JSON
         return Response(serialized_item.data)
     elif request.method == "POST":
