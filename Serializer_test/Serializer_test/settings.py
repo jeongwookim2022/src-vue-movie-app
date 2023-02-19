@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "test_API",
     "django_filters",
+    "rest_framework.authtoken",
     
 ]
 
@@ -135,5 +136,10 @@ REST_FRAMEWORK = {
     #### Pagination
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 2,
+
+    #### Token-based authentication
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
 
 }

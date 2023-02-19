@@ -5,20 +5,40 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from django.core.paginator import Paginator, EmptyPage
 
-# IMPORT your serializer FROM serializer.py
-from .serializers import MenuItemSerializer
+#### Token-based authentication in DRF
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+####
+
+#### IMPORT your serializer FROM serializer.py
+from .serializers import MenuItemSerializer, CategorySerializer
 
 ################# Class based views #################
 from rest_framework import viewsets
 from .models import MenuItem
 from .serializers import MenuItemSerializer  
 
-class MenuItemsViewSet(viewsets.ModelViewSet):
+# class MenuItemsViewSet(viewsets.ModelViewSet):
+#     queryset = MenuItem.objects.all()
+#     serializer_class = MenuItemSerializer
+#     ordering_fields = ['price','inventory'] # Sorting by the price & inventory
+#     search_fields = ['title', 'category__title'] # As the category is set as a related field in MenuItemSerializer,
+#                                                  # it works to search Items by a category's title by adding "category__title".
+
+###################### Generics ######################
+# It's much easier and more simple.
+from rest_framework import generics
+
+class CategoriesView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+class MenuItemsView(generics.ListCreateAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
-    ordering_fields = ['price','inventory'] # Sorting by the price & inventory
-    search_fields = ['title', 'category__title'] # As the category is set as a related field in MenuItemSerializer,
-                                                 # it works to search Items by a category's title by adding "category__title".
+    ordering_fields = ['price', 'inventory']
+    filterset_fields = ['price', 'inventory']
+    search_fields = ['title', 'category__id']
 
 #####################################################
 
@@ -65,9 +85,6 @@ class MenuItemsViewSet(viewsets.ModelViewSet):
 #         serialized_item.is_valid(raise_exception=True) # the request data must include every essetial field data. Raise an exception if any of them is missing
 #         serialized_item.save() # save the record in DB
 #         return Response(serialized_item.data, status=status.HTTP_201_CREATED)
-        
-
-
 
 # @api_view()
 # def single_item(request, id):
@@ -75,3 +92,9 @@ class MenuItemsViewSet(viewsets.ModelViewSet):
 #     item = get_object_or_404(MenuItem, pk=id) 
 #     serialized_item = MenuItemSerializer(item) # No need to add "many=Ture" when it's a single item
 #     return Response(serialized_item.data)
+
+##################Token_based_authentication###############
+@api_view()
+@permission_classes([IsAuthenticated])
+def secret(request):
+    return Response({"message": "Some secret message"})
