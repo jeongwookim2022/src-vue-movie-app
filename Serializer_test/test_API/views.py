@@ -5,10 +5,15 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status
 from django.core.paginator import Paginator, EmptyPage
 
-#### Token-based authentication in DRF
+############ Throttling
+from rest_framework.throttling import AnonRateThrottle
+from rest_framework.decorators import throttle_classes
+from rest_framework.throttling import UserRateThrottle
+from .throttles import TenCallsPerMinute # Customized throttling
+
+############ Token-based authentication in DRF
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
-####
 
 #### IMPORT your serializer FROM serializer.py
 from .serializers import MenuItemSerializer, CategorySerializer
@@ -99,7 +104,7 @@ class MenuItemsView(generics.ListCreateAPIView):
 def secret(request):
     return Response({"message": "Some secret message"})
 
-##################
+##############Authorization using Token in http post request's header#######
 @api_view()
 @permission_classes([IsAuthenticated])
 def manager_view(request):
@@ -108,3 +113,16 @@ def manager_view(request):
     else:
         return Response({"Message":"You are not authorized"}, 403)
     
+###################Throttling for two kinds users; one who got a token & Second who doesn't######
+@api_view()
+@throttle_classes([AnonRateThrottle])
+def throttle_check(request):
+    return Response({"message": "successful"})
+
+
+# @throttle_classes([UserRateThrottle]) # Using the built in Package class
+@api_view()
+@throttle_classes([TenCallsPerMinute]) # Customized Throttling for an endpoint
+def throttle_check_auth(request):
+    return Response({"message": "Message for the logged in users only."})
+
