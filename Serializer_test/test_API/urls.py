@@ -16,10 +16,9 @@ urlpatterns = [
     #### Token_based_Authentication
     path('api-token-auth/', obtain_auth_token), # This endpoint only accepts HTTP Post calls.
     path('secret/', views.secret),
-    ####
-    
-    #### Generics from rest_framework
+
+    ############ Class based using Generics from rest_framework #############
     path('category/', views.CategoriesView.as_view()),
     path('menu-items/', views.MenuItemsView.as_view()),
-    ####
+    path('manager-view/', views.manager_view),
 ]
