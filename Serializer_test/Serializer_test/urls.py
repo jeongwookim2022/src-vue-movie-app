@@ -19,4 +19,8 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("test_API.urls")),
+    ########### Djoser########################
+    # To mapping the APIs of djoser By including "djoser.urls".
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
 ]

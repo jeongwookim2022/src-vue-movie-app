@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "test_API",
     "django_filters",
     "rest_framework.authtoken",
+    "djoser",
     
 ]
 
@@ -140,7 +141,9 @@ REST_FRAMEWORK = {
     #### Token-based authentication
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    ),
+        'rest_framework.authentication.SessionAuthentication', # If you want a browsable API of Djoser
+                                                               # with Django admin login at the same time.
+    ),  
     
     #### Throttling
     'DEFAULT_THROTTLE_RATES': {
@@ -149,3 +152,9 @@ REST_FRAMEWORK = {
         'ten': '10/minute', # Scope
     }
 }
+
+#### Djoser for better authentication
+DJOSER = {
+    "USER_ID_FIELD": "username", # Specifying which field in a model will act as a PK.
+    # "LOGIN_FIELD":"email" # Same thing but an Email as PK
+}    
