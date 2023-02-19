@@ -16,6 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+################### JWT #########################
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.views import TokenBlacklistView
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("test_API.urls")),
@@ -23,4 +27,12 @@ urlpatterns = [
     # To mapping the APIs of djoser By including "djoser.urls".
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
+
+    ########### JWT #################################
+    # JWT needs API endpoints to accept username & pw to generate JWT token.
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    # BlackList; to ban an Refresh from regenerating an Access
+    path('api/token/blacklist/', TokenBlacklistView.as_view(), name='token_blacklist'),
 ]
