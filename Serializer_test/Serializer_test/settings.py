@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "djoser",
     "rest_framework_simplejwt",
     'rest_framework_simplejwt.token_blacklist',
+
     
 ]
 
@@ -166,6 +167,6 @@ DJOSER = {
 
 #################### JWT ######################
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
 
 }
